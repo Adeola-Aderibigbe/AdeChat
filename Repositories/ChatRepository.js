@@ -1,22 +1,15 @@
 const chat = require("../Models/chat").chat;
 
-const CreateChat = (newChat, done) =>
+const CreateChat = (async(newChat) =>
 {
-    chat.create(newChat,(err,data) => 
-    {
-        if(err) done(err);
-        done(null,data);
-    });
-};
+    await chat.create(newChat).save();
+});
 
-const GetChatsByRecipient = (userId,recipientId, done) => 
+const GetChatsByRecipient = (async(userId,recipientId) => 
 {
-    chat.find({recipient_id: recipientId, user_id:userId},(err,data) =>
-    {
-        if(err) done(err);
-        done(null,data);
-    });
-};
+    var chat = chat.find({recipient_id: recipientId, user_id:userId});
+    return chat;
+});
 
 exports.CreateChat = CreateChat;
 exports.GetChatsByRecipient = GetChatsByRecipient;

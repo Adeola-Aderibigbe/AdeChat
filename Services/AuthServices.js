@@ -2,26 +2,31 @@ const GetUser = require("../Repositories/UserRepository").GetUser;
 const CreateUser = require("../Repositories/UserRepository").CreateUser;
 const PasswordVerification = require("../Services/PasswordService").VerifyPassword;
 
-const AuthenticateUser = (loginDto, async(isAuthenticated) =>
+const LoginUser = (async(loginDto) =>
 {
     var username = loginDto.username;
+
     var currentUser = await GetUser(username);
     if(!currentUser)
-        return "User doesn't exist";
+        return "Invalid username/password";
+
     var isAuthenticated = await PasswordVerification(loginDto.plainPassword,currentUser.password);
-    return isAuthenticated;
+    if(isAuthenticated)
+        return username;
+
+    return "Invalid username/password"
 });
 
-const SignUp = (signUpDto, async(done) =>
+const SignUp = (async(signUpDto) =>
 {
     var username = signUpDto.username;
+
     var currentUser = await GetUser(username);
     if(currentUser)
      return "This username has been taken";
- 
-    CreateUser(signUpDto,(err,data)=>{
-        if(err)
-            done(err);
-        done(null,data);
-    });
+
+    return await CreateUser(signUpDto,done);
 });
+
+exports.LoginUser = LoginUser;
+exports.SignUp = SignUp;

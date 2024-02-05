@@ -1,36 +1,27 @@
 const user = require("../Models/user").user;
 
-const GetUser = (username,async (user) =>
+const GetUser = (async (username) =>
 {
     var user = await user.find({username:username});
-    return  user;
+    return user;
 });
 
-const UpdateUser = (id,updatedUser,async (done) =>
+const UpdateUser = (async (id, updatedUser) =>
 {
-    user.updateOne({_id:id},{$set : updatedUser},(err,data) => {
-        if(err) done(err);
-        done(null,data);
-    });
+    const user = await user.updateOne({_id:id},{$set : updatedUser});
+    return user;
 });
 
-const DeactivateUser = (id, done) =>
+const DeactivateUser = (async(id) =>
 {
-    user.updateOne({_id:id},{isDeactivated:true},(err,data)=>
-    {
-        if(err) done(err);
-        done(null,data);
-    });
-};
+   const user = await user.updateOne({_id:id},{isDeactivated:true});
+   return user;
+});
 
-const CreateUser = (newUser,done) => 
+const CreateUser = (async (newUser) => 
 {
-    user.create(newUser,(err,data) =>
-    {
-        if(err) done(err);
-        done(null,data);
-    });
-};
+    await user.create(newUser);
+});
 
 exports.CreateUser = CreateUser;
 exports.DeactivateUser = DeactivateUser;
